@@ -7,7 +7,7 @@ const router = new express.Router()
 router.get('/getRateAndPrice', auth, async (req, res) => {
   try {
     const transactionInfoKeys = Object.keys(req.body)
-    const allowedKeys = ['sendCurr', 'receiveCurr', 'sendAmount']
+    const allowedKeys = ['sendCurrency', 'receiveCurrency', 'sendAmount']
 
     const isValidOperation = transactionInfoKeys.every(transactionInfoKey =>
       allowedKeys.includes(transactionInfoKey)

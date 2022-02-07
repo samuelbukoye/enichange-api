@@ -56,12 +56,12 @@ transactionSchema.statics.findExchangeRate = (
 ) => {
   if (sendCurrency === 'GBP' && receiveCurrency === 'USD') return 1.35
   if (sendCurrency === 'GBP' && receiveCurrency === 'EUR') return 1.18
-  if (sendCurrency === 'GBP' && receiveCurrency === 'GBP') return 1
-  if (sendCurrency === 'USD' && receiveCurrency === 'USD') return 1
+  if (sendCurrency === 'GBP' && receiveCurrency === 'GBP') return 1.0
+  if (sendCurrency === 'USD' && receiveCurrency === 'USD') return 1.0
   if (sendCurrency === 'USD' && receiveCurrency === 'EUR') return 0.87
   if (sendCurrency === 'USD' && receiveCurrency === 'GBP') return 0.74
   if (sendCurrency === 'EUR' && receiveCurrency === 'USD') return 1.15
-  if (sendCurrency === 'EUR' && receiveCurrency === 'EUR') return 1
+  if (sendCurrency === 'EUR' && receiveCurrency === 'EUR') return 1.0
   if (sendCurrency === 'EUR' && receiveCurrency === 'GBP') return 0.85
 }
 
