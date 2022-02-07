@@ -4,6 +4,48 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
+router.get('/getRateAndPrice', auth, async (req, res) => {
+  try {
+    const transactionInfoKeys = Object.keys(req.body)
+    const allowedKeys = ['sendCurr', 'receiveCurr', 'sendAmount']
+
+    const isValidOperation = transactionInfoKeys.every(transactionInfoKey =>
+      allowedKeys.includes(transactionInfoKey)
+    )
+    if (!isValidOperation) {
+      return res
+        .status(400)
+        .send({ error: 'Invalid create transaction operation!' })
+    }
+
+    const { sendCurrency, receiveCurrency, sendAmount } = req.body
+
+    if (
+      !(
+        (sendCurrency === 'GBP' ||
+          sendCurrency === 'USD' ||
+          sendCurrency === 'EUR') &&
+        (receiveCurrency === 'GBP' ||
+          receiveCurrency === 'USD' ||
+          receiveCurrency === 'EUR')
+      )
+    ) {
+      return res
+        .status(400)
+        .send({ error: 'Invalid create transaction operation!' })
+    }
+
+    const exchangeRate = Transaction.findExchangeRate(
+      sendCurrency,
+      receiveCurrency
+    )
+    const receiveAmount = exchangeRate * sendAmount
+    res.status(200).send({ exchangeRate, receiveAmount })
+  } catch (err) {
+    res.status(400).send(err)
+  }
+})
+
 router.post('/transaction', auth, async (req, res) => {
   const transactionInfoKeys = Object.keys(req.body)
   const allowedKeys = [
