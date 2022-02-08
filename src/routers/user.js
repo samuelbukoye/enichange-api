@@ -24,6 +24,11 @@ router.post('/signup', async (req, res) => {
     return res.status(400).send({ error: 'Invalid create user operation!' })
   }
   const signupInfo = req.body
+
+  if (signupInfo.userName<4) {
+    return res.status(400).send({ error: 'username must be at least 4 characters' })
+  }
+
   signupInfo.USD = 1000
   signupInfo.GBP = 0
   signupInfo.EUR = 0
