@@ -38,7 +38,7 @@ router.post('/signup', async (req, res) => {
 })
 
 // login
-router.get('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   const userInfoKeys = Object.keys(req.body)
   const allowedKeys = ['userName', 'email', 'password']
   const isValidOperation = userInfoKeys.every(userInfoKey =>

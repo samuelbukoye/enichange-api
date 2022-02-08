@@ -4,7 +4,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
-router.get('/getRateAndPrice', auth, async (req, res) => {
+router.post('/getRateAndPrice', auth, async (req, res) => {
   try {
     const transactionInfoKeys = Object.keys(req.body)
     const allowedKeys = ['sendCurrency', 'receiveCurrency', 'sendAmount']
