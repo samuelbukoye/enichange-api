@@ -60,10 +60,10 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   const userKey = req.body.email ? 'email' : 'userName'
   if (!req.body[userKey]) {
-    return res.status(400).send('Please provide email or username')
+    return res.status(400).send('Invalid login operation')
   }
   if (!req.body.password) {
-    return res.status(400).send('Please provide password')
+    return res.status(400).send('Invalid login operation')
   }
   const userInfoKeys = Object.keys(req.body)
   const allowedKeys = ['userName', 'email', 'password']
