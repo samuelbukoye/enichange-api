@@ -13,9 +13,7 @@ router.post('/getRateAndPrice', auth, async (req, res) => {
       allowedKeys.includes(transactionInfoKey)
     )
     if (!isValidOperation) {
-      return res
-        .status(400)
-        .send({ error: 'Invalid create transaction operation!' })
+      return res.status(400).send('Invalid create transaction operation!')
     }
 
     const { sendCurrency, receiveCurrency, sendAmount } = req.body
