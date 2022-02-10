@@ -12,7 +12,10 @@ router.post('/getRateAndPrice', auth, async (req, res) => {
     const isValidOperation = transactionInfoKeys.every(transactionInfoKey =>
       allowedKeys.includes(transactionInfoKey)
     )
-    if (!isValidOperation) {
+    const isValidOperation2 = allowedKeys.every(allowedKey =>
+      transactionInfoKeys.includes(allowedKey)
+    )
+    if (!(isValidOperation && isValidOperation2)) {
       return res.status(400).send('Invalid create transaction operation!')
     }
 
@@ -28,9 +31,7 @@ router.post('/getRateAndPrice', auth, async (req, res) => {
           receiveCurrency === 'EUR')
       )
     ) {
-      return res
-        .status(400)
-        .send({ error: 'Invalid create transaction operation!' })
+      return res.status(400).send('Invalid create transaction operation!')
     }
 
     const exchangeRate = Transaction.findExchangeRate(
@@ -40,7 +41,7 @@ router.post('/getRateAndPrice', auth, async (req, res) => {
     const receiveAmount = exchangeRate * sendAmount
     res.status(200).send({ exchangeRate, receiveAmount })
   } catch (err) {
-    res.status(400).send(err)
+    res.status(400).send(err.message)
   }
 })
 
@@ -55,10 +56,11 @@ router.post('/transaction', auth, async (req, res) => {
   const isValidOperation = transactionInfoKeys.every(transactionInfoKey =>
     allowedKeys.includes(transactionInfoKey)
   )
-  if (!isValidOperation) {
-    return res
-      .status(400)
-      .send({ error: 'Invalid create transaction operation!' })
+  const isValidOperation2 = allowedKeys.every(allowedKey =>
+    transactionInfoKeys.includes(allowedKey)
+  )
+  if (!(isValidOperation && isValidOperation2)) {
+    return res.status(400).send('Invalid create transaction operation!')
   }
 
   const {
@@ -69,15 +71,17 @@ router.post('/transaction', auth, async (req, res) => {
   } = req.body
 
   if (sendAmount < 5) {
-    return res.status(400).send({
-      error: `You can only send a minimun amount of 5 ${sendCurrency}`
-    })
+    return res
+      .status(400)
+      .send(`You can only send a minimun amount of 5 ${sendCurrency}`)
   }
 
   if (sendAmount > req.user[sendCurrency]) {
-    return res.status(400).send({
-      error: `You cannot send more than your ${sendCurrency} balance of ${req.user[sendCurrency]}`
-    })
+    return res
+      .status(400)
+      .send(
+        `You cannot send more than your ${sendCurrency} balance of ${req.user[sendCurrency]}`
+      )
   }
 
   if (
@@ -90,9 +94,7 @@ router.post('/transaction', auth, async (req, res) => {
         receiveCurrency === 'EUR')
     )
   ) {
-    return res
-      .status(400)
-      .send({ error: 'Invalid create transaction operation!' })
+    return res.status(400).send('Invalid create transaction operation!')
   }
 
   const receiver = await User.findUserByUsername(receiverUserName)
@@ -155,7 +157,7 @@ router.post('/transaction', auth, async (req, res) => {
     await senderTransaction.save()
     res.status(201).send({ user: req.user, transaction: senderTransaction })
   } catch (err) {
-    res.status(400).send(err)
+    res.status(400).send(err.message)
   }
 })
 
@@ -166,7 +168,7 @@ router.get('/transactions', auth, async (req, res) => {
     })
     res.send(req.user.transactions)
   } catch (err) {
-    res.status(500).send(err)
+    res.status(500).send()
   }
 })
 
