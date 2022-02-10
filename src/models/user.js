@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       validate (value) {
         if (!validator.isEmail(value)) {
-          throw new Error('Email is invalid')
+          throw new Error('Please input a correct email address')
         }
       }
     },
@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       validate (value) {
         if (value < 0) {
-          throw new Error('EURo balance cannot be negative')
+          throw new Error('EURO balance cannot be negative')
         }
       }
     },
@@ -102,9 +102,14 @@ userSchema.virtual('transactions', {
 userSchema.methods.generateAuthToken = async function () {
   const user = this
 
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, {
-    expiresIn: '7 days'
-  })
+  // const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, {
+  const token = jwt.sign(
+    { _id: user._id.toString() },
+    'thisismydopeasssecret',
+    {
+      expiresIn: '7 days'
+    }
+  )
 
   user.tokens = user.tokens.concat({ token })
   await user.save()
@@ -124,16 +129,13 @@ userSchema.methods.toJSON = function () {
 
 // log in
 userSchema.statics.findByCredentials = async body => {
-  const userKey = body.email ? 'email' : 'userName'
-  const userInfo = body.email ? body.email : body.userName
-  const password = body.password
-  const user = await User.findOne({ [userKey]: userInfo })
+  const user = await User.findOne({ [body.userKey]: body.userInfo })
   if (!user) {
-    throw new Error('unable to login')
+    throw new Error('User does not exist')
   }
-  const isMatch = await bcrypt.compare(password, user.password)
+  const isMatch = await bcrypt.compare(body.password, user.password)
   if (!isMatch) {
-    throw new Error('unable to login')
+    throw new Error('Wrong password')
   }
 
   return user

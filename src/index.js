@@ -5,7 +5,7 @@ const UserRouter = require('./routers/user')
 const TransactionRouter = require('./routers/transaction')
 
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT || 5000
 
 app.use(express.json())
 app.use(cors())
