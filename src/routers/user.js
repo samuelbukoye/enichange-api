@@ -27,8 +27,8 @@ router.post('/signup', async (req, res) => {
   if (!(isValidOperation && isValidOperation2)) {
     return res.status(400).send('Invalid signup operation')
   }
-  if (signupInfo.userName < 4) {
-    return res.status(400).send('Username must be at least 4 characters')
+  if (signupInfo.userName.length <= 4 || signupInfo.userName.length >= 11) {
+    return res.status(400).send('Username must be 5 and 10 characters')
   }
 
   try {
